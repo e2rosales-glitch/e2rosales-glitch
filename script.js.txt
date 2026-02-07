@@ -1,0 +1,103 @@
+// ===== Curriculum Data =====
+const curricula = {
+  molecularSynthesis: {
+    name: "Molecular Synthesis (UCSD)",
+    requirements: [
+      {
+        name: "General Chemistry",
+        courses: ["CHEM 6A", "CHEM 6B", "CHEM 6C"]
+      },
+      {
+        name: "Organic Chemistry",
+        courses: ["CHEM 40A", "CHEM 40B", "CHEM 40C"]
+      },
+      {
+        name: "Organic Lab",
+        courses: ["CHEM 43A", "CHEM 43B"]
+      }
+    ]
+  }
+};
+
+// ===== Load Saved Plan =====
+let studentPlan = JSON.parse(localStorage.getItem("studentPlan")) || {
+  major: "",
+  completedCourses: []
+};
+
+const majorSelect = document.getElementById("majorSelect");
+const plannerDiv = document.getElementById("planner");
+
+// Restore major selection
+majorSelect.value = studentPlan.major;
+
+// ===== Event: Major Selected =====
+majorSelect.addEventListener("change", () => {
+  studentPlan.major = majorSelect.value;
+  studentPlan.completedCourses = [];
+  savePlan();
+  renderPlanner();
+});
+
+// ===== Save Plan =====
+function savePlan() {
+  localStorage.setItem("studentPlan", JSON.stringify(studentPlan));
+}
+
+// ===== Render Planner =====
+function renderPlanner() {
+  plannerDiv.innerHTML = "";
+
+  if (!studentPlan.major) return;
+
+  const curriculum = curricula[studentPlan.major];
+
+  curriculum.requirements.forEach(req => {
+    const reqDiv = document.createElement("div");
+    reqDiv.className = "requirement";
+
+    let completedCount = 0;
+
+    const title = document.createElement("h3");
+    title.textContent = req.name;
+    reqDiv.appendChild(title);
+
+    req.courses.forEach(course => {
+      const courseDiv = document.createElement("div");
+      courseDiv.className = "course";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = studentPlan.completedCourses.includes(course);
+
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+          studentPlan.completedCourses.push(course);
+        } else {
+          studentPlan.completedCourses =
+            studentPlan.completedCourses.filter(c => c !== course);
+        }
+        savePlan();
+        renderPlanner();
+      });
+
+      const label = document.createElement("label");
+      label.textContent = course;
+
+      courseDiv.appendChild(checkbox);
+      courseDiv.appendChild(label);
+      reqDiv.appendChild(courseDiv);
+
+      if (checkbox.checked) completedCount++;
+    });
+
+    if (completedCount === req.courses.length) {
+      reqDiv.classList.add("completed");
+    }
+
+    plannerDiv.appendChild(reqDiv);
+  });
+}
+
+// Initial render
+renderPlanner();
