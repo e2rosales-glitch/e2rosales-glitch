@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Degree Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>College Degree Planner</h1>
+  <p class="subtitle">
+    Build and understand your degree plan — clearly, simply, and on your terms.
+  </p>
+
+  <label for="majorSelect"><strong>Select your major:</strong></label>
+  <select id="majorSelect">
+    <option value="">-- choose --</option>
+    <option value="molecularSynthesis">Molecular Synthesis (UCSD)</option>
+  </select>
+
+  <div id="planner"></div>
+
+  <p class="footer">
+    Your plan is saved automatically on your device.
+  </p>
+
+  <script src="script.js"></script>
+</body>
+</html>
